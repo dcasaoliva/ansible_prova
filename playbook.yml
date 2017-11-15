@@ -1,0 +1,33 @@
+---
+- name: My first playbook :)
+  hosts: "webservers"
+  become: true
+  become_user: root
+  vars:
+   - test: test1 
+  handlers:     
+    - name: restart Apache
+      service: name=httpd state=restarted
+  tasks:
+    - name: capture output of whoami command
+      command: whoami
+      register: login
+      
+    - name: "Show message if distribution is Debian"
+      debug: msg="Is Debian!"
+      when: ansible_os_family == "Debian"
+      
+    - name: "Show message if distribution is RedHat"
+      debug: msg="Is RedHat!"
+      when: ansible_os_family == "RedHat"
+      
+    - name: debug
+      debug: var=login
+      
+    - name: debug
+      debug: var=ansible_distribution
+    
+    #- name: debug
+    #  debug: var=token
+  roles:
+    - role: apache
